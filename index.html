@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Freddy Bear</title>
+    <style>
+        /* SOLO SE AÑADIÓ ESTA PARTE PARA QUE SE VEA BIEN EN CELULAR */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        /* CONTENEDOR RESPONSIVE - SOLO ESTO SE AÑADIÓ */
+        .responsive-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .canvas {
+            position: relative;
+            width: 90vw;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+        }
+        /* FIN DE LO AÑADIDO */
+
+        :root {
+            --bear-brown: #a66f4a;
+            --bear-dark: #8c5a3c;
+            --bear-light: #e5b38e;
+            --black: #2d2d2d;
+            --blue-hat: #3b4a5a;
+            --blue-ribbon: #6d8ba0;
+        }
+
+        .bear {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .head {
+            position: relative;
+            width: 180px;
+            height: 140px;
+            background: var(--bear-brown);
+            border: 4px solid var(--black);
+            border-radius: 50% 50% 45% 45%;
+            z-index: 10;
+        }
+
+        .body-main {
+            position: relative;
+            width: 160px;
+            height: 130px;
+            background: var(--bear-brown);
+            border: 4px solid var(--black);
+            border-radius: 40% 40% 50% 50%;
+            margin: -20px auto 0;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .belly {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 100px;
+            background: var(--bear-light);
+            border-radius: 50%;
+        }
+
+        .ear {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--bear-brown);
+            border: 4px solid var(--black);
+            border-radius: 50%;
+            top: -10px;
+            z-index: -1;
+        }
+
+        .ear.left { left: -10px; }
+        .ear.right { right: -10px; }
+
+        .ear::after {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: var(--bear-light);
+            border-radius: 50%;
+            top: 12px;
+            left: 12px;
+        }
+
+        .eye {
+            position: absolute;
+            width: 18px;
+            height: 22px;
+            background: var(--black);
+            border-radius: 50%;
+            top: 60px;
+        }
+
+        .eye::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            top: 4px;
+            left: 4px;
+        }
+
+        .eye.left { left: 45px; }
+        .eye.right { right: 45px; }
+
+        .muzzle {
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            background: var(--bear-light);
+            border: 3px solid var(--black);
+            border-radius: 50%;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: visible;
+        }
+
+        .nose {
+            position: absolute;
+            width: 20px;
+            height: 12px;
+            background: var(--black);
+            border-radius: 50%;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .mouth {
+            position: absolute;
+            width: 30px;
+            height: 6px;
+            background: var(--black);
+            border-radius: 0 0 15px 15px;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.05s ease;
+        }
+
+        .hat {
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+        }
+
+        .hat-base {
+            width: 100px;
+            height: 25px;
+            background: var(--blue-hat);
+            border: 4px solid var(--black);
+            border-radius: 10px;
+        }
+
+        .hat-top {
+            width: 70px;
+            height: 65px;
+            background: var(--blue-hat);
+            border: 4px solid var(--black);
+            border-bottom: none;
+            margin: 0 auto -4px;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+        }
+
+        .hat-ribbon {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 15px;
+            background: var(--blue-ribbon);
+            border-top: 3px solid var(--black);
+        }
+
+        .bowtie {
+            position: absolute;
+            top: 135px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+        }
+
+        .bow {
+            width: 25px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 5px;
+        }
+
+        .bow-center {
+            width: 12px;
+            height: 12px;
+            background: var(--black);
+            border-radius: 50%;
+            margin: 0 -5px;
+            z-index: 2;
+        }
+
+        .foot {
+            position: absolute;
+            bottom: -5px;
+            width: 70px;
+            height: 60px;
+            background: var(--bear-brown);
+            border: 4px solid var(--black);
+            border-radius: 50% 50% 40% 40%;
+            z-index: 12;
+        }
+
+        .foot.left { left: -30px; transform: rotate(10deg); }
+        .foot.right { right: -30px; transform: rotate(-10deg); }
+
+        .foot-pad {
+            position: absolute;
+            width: 35px;
+            height: 30px;
+            background: var(--bear-light);
+            border-radius: 50%;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .mic {
+            position: absolute;
+            left: -65px;
+            bottom: 20px;
+            transform: rotate(-20deg);
+            z-index: 15;
+        }
+
+        .mic-head {
+            width: 35px;
+            height: 35px;
+            background: var(--blue-ribbon);
+            border: 3px solid var(--black);
+            border-radius: 50%;
+            background-image: 
+                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(0,0,0,0.1) 25%, transparent 25%);
+            background-size: 6px 6px;
+        }
+
+        .mic-handle {
+            width: 12px;
+            height: 30px;
+            background: var(--black);
+            margin: -5px auto 0;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .play-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #3b4a5a;
+            color: white;
+            border: 3px solid #2d2d2d;
+            border-radius: 50px;
+            padding: 12px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: #2a3a4a;
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        .play-btn.playing {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="responsive-container">
+        <div class="canvas">
+            <div class="bear">
+                <div class="hat">
+                    <div class="hat-top">
+                        <div class="hat-ribbon"></div>
+                    </div>
+                    <div class="hat-base"></div>
+                </div>
+
+                <div class="head">
+                    <div class="ear left"></div>
+                    <div class="ear right"></div>
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="muzzle">
+                        <div class="nose"></div>
+                        <div class="mouth" id="mouth"></div>
+                    </div>
+                </div>
+
+                <div class="bowtie">
+                    <div class="bow"></div>
+                    <div class="bow-center"></div>
+                    <div class="bow"></div>
+                </div>
+
+                <div class="body-main">
+                    <div class="belly"></div>
+                </div>
+
+                <div class="foot left">
+                    <div class="foot-pad"></div>
+                </div>
+                <div class="foot right">
+                    <div class="foot-pad"></div>
+                </div>
+
+                <div class="mic">
+                    <div class="mic-head"></div>
+                    <div class="mic-handle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="play-btn" id="playBtn">NO TOCAR</button>
+
+    <audio id="song" loop>
+        <source src="or.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const playBtn = document.getElementById('playBtn');
+        const song = document.getElementById('song');
+        const mouth = document.getElementById('mouth');
+        let isPlaying = false;
+        let animationId = null;
+        
+        function startRhythm() {
+            if (animationId) clearInterval(animationId);
+            
+            animationId = setInterval(() => {
+                if (!isPlaying) return;
+                
+                const shouldMove = Math.random() < 0.4;
+                
+                if (shouldMove) {
+                    const height = 8 + Math.random() * 12;
+                    mouth.style.height = height + 'px';
+                    mouth.style.borderRadius = '0 0 ' + (height + 8) + 'px ' + (height + 8) + 'px';
+                    
+                    setTimeout(() => {
+                        if (isPlaying) {
+                            mouth.style.height = '6px';
+                            mouth.style.borderRadius = '0 0 15px 15px';
+                        }
+                    }, 200);
+                } else {
+                    mouth.style.height = '6px';
+                    mouth.style.borderRadius = '0 0 15px 15px';
+                }
+            }, 350);
+        }
+        
+        function stopRhythm() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+            mouth.style.height = '6px';
+            mouth.style.borderRadius = '0 0 15px 15px';
+        }
+        
+        playBtn.addEventListener('click', async () => {
+            if (!isPlaying) {
+                try {
+                    await song.play();
+                    isPlaying = true;
+                    playBtn.textContent = 'OR, OR, OR...';
+                    playBtn.classList.add('playing');
+                    startRhythm();
+                } catch (error) {
+                    console.log('Error:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                song.pause();
+                song.currentTime = 0;
+                isPlaying = false;
+                playBtn.textContent = 'NO TOCAR';
+                playBtn.classList.remove('playing');
+                stopRhythm();
+            }
+        });
+        
+        song.addEventListener('ended', () => {
+            isPlaying = false;
+            playBtn.textContent = 'NO TOCAR';
+            playBtn.classList.remove('playing');
+            stopRhythm();
+        });
+    </script>
+</body>
+</html>
