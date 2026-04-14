@@ -5,39 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Freddy Bear</title>
     <style>
-        /* SOLO SE AÑADIÓ ESTA PARTE PARA QUE SE VEA BIEN EN CELULAR */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-
-        /* CONTENEDOR RESPONSIVE - SOLO ESTO SE AÑADIÓ */
-        .responsive-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100vh;
-        }
-
-        .canvas {
-            position: relative;
-            width: 90vw;
-            max-width: 400px;
-            height: auto;
-            aspect-ratio: 1 / 1;
-        }
-        /* FIN DE LO AÑADIDO */
 
         :root {
             --bear-brown: #a66f4a;
@@ -48,9 +21,76 @@
             --blue-ribbon: #6d8ba0;
         }
 
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            touch-action: manipulation;
+        }
+
+        /* Contenedor principal responsive */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .canvas {
+            position: relative;
+            width: 90vw;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            transform: scale(0.9);
+        }
+
+        @media (max-width: 480px) {
+            .canvas {
+                transform: scale(0.85);
+            }
+        }
+
+        @media (max-width: 380px) {
+            .canvas {
+                transform: scale(0.75);
+            }
+        }
+
+        /* === TEXTO EN LA ESQUINA === */
+        .esquina-texto {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Comic Neue', cursive, Arial;
+            z-index: 200;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+        }
+
+        /* Si lo quieres en otra esquina, cambia 'bottom' y 'right' por:
+           - superior izquierda: top: 15px; left: 15px; bottom: auto; right: auto;
+           - superior derecha: top: 15px; right: 15px; bottom: auto; left: auto;
+           - inferior izquierda: bottom: 15px; left: 15px; top: auto; right: auto;
+        */
+
         .bear {
             position: absolute;
-            bottom: 50px;
+            bottom: 15%;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -96,7 +136,7 @@
             border: 4px solid var(--black);
             border-radius: 50%;
             top: -10px;
-            z-index: -1;
+            z-index: 1;
         }
 
         .ear.left { left: -10px; }
@@ -302,6 +342,9 @@
             cursor: pointer;
             z-index: 100;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 180px;
+            text-align: center;
         }
 
         .play-btn:hover {
@@ -312,11 +355,15 @@
         .play-btn.playing {
             background: #e74c3c;
         }
+
+        .play-btn:active {
+            transform: translateX(-50%) scale(0.96);
+        }
     </style>
 </head>
 <body>
 
-    <div class="responsive-container">
+    <div class="container">
         <div class="canvas">
             <div class="bear">
                 <div class="hat">
@@ -362,9 +409,12 @@
         </div>
     </div>
 
+    
+    <div class="esquina-texto"> TAIPE MAMALO </div>
+
     <button class="play-btn" id="playBtn">NO TOCAR</button>
 
-    <audio id="song" loop>
+    <audio id="song" loop preload="auto">
         <source src="or.mp3" type="audio/mpeg">
     </audio>
 
